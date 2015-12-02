@@ -13,6 +13,8 @@
 @end
 
 @implementation ViewController
+//声明一个重用的ID
+static NSString *identifier = @"hero_cell";
 
 - (NSArray *)heros
 {
@@ -43,7 +45,24 @@
     //获取数据模型
     QYHero *model = self.heros[indexPath.row];
     //创建单元格
-    UITableViewCell *cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:nil];
+//    UITableViewCell *cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:nil];
+
+    //单元格的重用
+    //1、在创建单元格的时候要指定一个重用ID
+    //2、当需要一个新的单元格的时候，会先去“缓存池”中根据重用ID去查找是否有可用的单元格
+    //**如果有则直接取出进行使用
+    //**如果没有就在创建一个新的单元格
+    
+    
+
+    
+    //根据这个ID去缓存池中查找对应的cell
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+    
+    //判断，是否有可用的单元格 没有就在创建一个
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:identifier];
+    }
     
     //把数据模型设置给单元格
     cell.imageView.image = [UIImage imageNamed:model.icon];
@@ -51,8 +70,18 @@
     cell.detailTextLabel.text = model.desc;
     
     cell.accessoryType = UITableViewCellAccessoryDetailButton;
+    
+    UIView *bgView = [[UIView alloc]init];
+    bgView.backgroundColor = [UIColor yellowColor];
+    cell.selectedBackgroundView = bgView;
+    
+    
+    //输出当前单元格的行索引
+    NSLog(@"%p----行索引:%ld",cell,indexPath.row);
     //返回单元格
     return cell;
+    
+    
 }
 
 #pragma mark -代理方法
