@@ -8,7 +8,7 @@
 
 #import "ViewController.h"
 #import "QYHero.h"
-@interface ViewController ()<UITableViewDataSource>
+@interface ViewController ()<UITableViewDataSource,UITableViewDelegate>
 @property (nonatomic,strong) NSArray *heros;
 @end
 
@@ -43,15 +43,34 @@
     //获取数据模型
     QYHero *model = self.heros[indexPath.row];
     //创建单元格
-    UITableViewCell *cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:nil];
+    UITableViewCell *cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:nil];
     
     //把数据模型设置给单元格
     cell.imageView.image = [UIImage imageNamed:model.icon];
     cell.textLabel.text = model.name;
     cell.detailTextLabel.text = model.desc;
     
+    cell.accessoryType = UITableViewCellAccessoryDetailButton;
     //返回单元格
     return cell;
+}
+
+#pragma mark -代理方法
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    //获取点击的单元格
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    //将点击的单元格字体变色
+    cell.textLabel.textColor = [UIColor yellowColor];
+    //设置右边栏的形式
+    cell.accessoryType = UITableViewCellAccessoryCheckmark;
+}
+
+-(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    cell.textLabel.textColor = [UIColor redColor];
+    cell.accessoryType = UITableViewCellAccessoryNone;
 }
 
 #pragma mark - 隐藏状态栏
@@ -67,6 +86,11 @@
     
     //设置数据源
     tableView.dataSource = self;
+    
+    //设置行高
+    tableView.rowHeight = 70;
+    
+    tableView.allowsSelection = YES;
     // Do any additional setup after loading the view, typically from a nib.
 }
 
